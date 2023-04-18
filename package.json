@@ -1,0 +1,27 @@
+{
+  "name": "fides-cli",
+  "version": "1.0.0",
+  "description": "CLI for Fides Infrastructure",
+  "type": "module",
+  "main": "bin/index.js",
+  "bin": {
+    "fides": "bin/index.js",
+    "fides-cli": "bin/index.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/governify/fides-cli.git"
+  },
+  "author": "",
+  "license": "Apache License 2.0",
+  "bugs": {
+    "url": "https://github.com/governify/fides-cli/issues"
+  },
+  "homepage": "https://github.com/governify/fides-cli#readme",
+  "dependencies": {
+    "commander": "^10.0.1"
+  }
+}
