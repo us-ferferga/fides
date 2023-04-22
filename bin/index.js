@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 
-import { spawnSync } from "child_process";
+//import { spawnSync } from "child_process";
+import * as infrastructure from './lib/infrastructure.js';
+import * as config from './config/config.js';
 import { program } from "commander";
-import fs from "fs";
 
 /* Configure the CLI */
 program
@@ -19,14 +20,14 @@ const setup = program
 const setupInfrastructure = setup
     .command("infrastructure <url>")
     .requiredOption("--env-file <path>", "Path to the .env file")
-    .requiredOption("-f, --file <path>", "Path to the docker-compose file", "docker-compose.yml")
-    .requiredOption("-a, --agreement <path>", "Path to the agreement file")
+    .requiredOption("-f, --file <path>", "Path to the docker-compose file", config.infrastructure.docker.path)
+    .requiredOption("-a, --agreement <path>", "Path to the agreement file", config.infrastructure.agreement.path.from)
     .requiredOption("-d, --dump <path>", "Path to the dump file")
     .action((url, options) => {
-        const { envFile, file } = options;
-        deployInfrastructure(url, envFile, file);
-        configureInfrastructure(agreement);
-        loadInfrastructureData(dump);
+        const { envFile, file, agreement } = options;
+        infrastructure.deploy(url, envFile, file);
+        infrastructure.configure(agreement);
+        infrastructure.loadData(dump);
     });
 
 const setupESC = setup
@@ -48,18 +49,3 @@ const down = program
 
 /* Main program execution */
 program.parse();
-
-/* Infrastructure functions */
-function deployInfrastructure(url, envFile, file) {
-    spawnSync("git", ["clone", url, "infrastructure"], { stdio: "inherit" });
-    spawnSync("cp", [envFile, "infrastructure/.env"], { stdio: "inherit" });
-    spawnSync("docker-compose", ["-f", `infrastructure/${file}`, "--env-file", "infrastructure/.env", "up", "-d"], { stdio: "inherit" });
-}
-
-function configureInfrastructure(agreement) {
-    // TODO: configure infrastructure
-}
-
-function loadInfrastructureData(dump) {
-    // TODO: load infrastructure data
-}
