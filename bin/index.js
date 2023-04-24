@@ -3,6 +3,7 @@
 //import { spawnSync } from "child_process";
 import * as infrastructure from './lib/infrastructure.js';
 import * as config from './config/config.js';
+import * as esc from './lib/esc.js';
 import { program } from "commander";
 
 /* Configure the CLI */
@@ -31,9 +32,10 @@ const setupInfrastructure = setup
     });
 
 const setupESC = setup
-    .command("esc")
-    .action((options) => {
-        console.log("setup esc")
+    .command("esc <url>")
+    .action((url, options) => {
+        esc.configure(url);
+        esc.init();
     });
 
 const run = program

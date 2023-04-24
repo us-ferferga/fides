@@ -41,3 +41,12 @@ export function readFile(file) {
 export function getFileName(file) {
     return path.basename(file);
 }
+
+/**
+ * @description Get subdirectories of the folder
+ * @param file
+ * @return Directories name
+ */
+export function getDirectories(file) {
+    return fs.readdirSync(file, { withFileTypes: true }).filter(dirent => dirent.isDirectory()).map(dirent => dirent.name)
+}
