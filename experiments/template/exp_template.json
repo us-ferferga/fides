@@ -1,0 +1,22 @@
+{
+    "name": "Bluejay_2_timeWindow",
+    "config" : {
+        "escsNumber" : 2,
+        "elasticityMode" : "timeWindow",
+        "experimentName": "Bluejay_2_timeWindow",
+        "chaincodeName": "bluejay_ansX",
+        "executionTime": 1200,
+        "coldStart": false,
+        "analysisFrequency": 15,
+        "harvestFrequency": 15,
+        "maximumTimeAnalysis": 3.2,
+        "minimumTimeAnalysis": 3
+    },
+    "period" : {
+        "from" : "2023-04-18T01:00:00.000Z",
+        "to" : "2023-05-23T23:00:00.000Z"
+    },
+    "timeBetween" : [
+        300, 300
+    ]
+}

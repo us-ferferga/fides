@@ -62,3 +62,11 @@ export function init() {
     let escPath = path.join(directory,repository.esc.name);
     spawnSync("npm", ["start", "--prefix", escPath], { stdio: "inherit" })
 }
+
+/**
+ * @description Down network
+ */
+export function down() {
+    let endpoint = config.experiments.endpoint;
+    spawnSync("curl", ["-X", "POST", endpoint.esc.down, '-s', '-o', '/dev/null'], { stdio: "inherit" });
+}

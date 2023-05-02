@@ -103,5 +103,13 @@ dist
 # TernJS port file
 .tern-port
 
+# macOS
+.DS_Store
+
 # ESC
 fabric-samples/
+esc/
+experiments/runs/*
+
+# Infrastructure
+infrastructure/

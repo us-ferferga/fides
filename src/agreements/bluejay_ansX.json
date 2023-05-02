@@ -1,0 +1,118 @@
+{   
+    "name": "BLUEJAY INFRASTRUCTURE",
+    "id": "bluejay_ans",
+    "version": "1.0.0",
+    "type": "agreement",
+    "context": {
+        "validity": {
+            "initial": "2022-01-01",
+            "timeZone": "Europe/Madrid"
+        },
+        "definitions": {
+            "dashboards": {
+                "group-by-service": {
+                    "default": true,
+                    "base": "http://host.docker.internal:5200/api/v1/public/dashboards/group-by-service/base.json",
+                    "modifier": "http://host.docker.internal:5200/api/v1/public/dashboards/group-by-service/modifier.js",
+                    "config": {}
+                }
+            },
+            "services": {
+                "Bluejay Render": "bluejay-render",
+                "Bluejay Assets": "bluejay-assets",
+                "Bluejay Reporter": "bluejay-reporter",
+                "Bluejay Registry": "bluejay-registry",
+                "Bluejay Dashboard": "bluejay-dashboard",
+                "Bluejay Director": "bluejay-director",
+                "Bluejay Scopes": "bluejay-scopes",
+                "Bluejay Join": "bluejay-join"
+            },
+            "scopes": {
+                "bluejay": {
+                    "service": {
+                        "name": "Service",
+                        "description": "A service from the infrastructure",
+                        "type": "string",
+                        "default": "1010101010"
+                    }
+                }      
+            },
+            "collectors": {
+                "dynamic": {
+                    "infrastructurePath": "internal.collector.dynamic",
+                    "endpoint": "/api/v2/computations",
+                    "type": "POST-GET-V1",
+                    "apiVersion": "2",
+                    "config": {
+                        "url": "http://host.docker.internal:5900/api/v1"
+                    }
+                }
+            }
+        }
+    },
+    "terms": {
+        "metrics": {
+            "AVERAGE_RESPONSE_TIME" : {
+                "collector" : {
+                    "$ref" : "#/context/definitions/collectors/dynamic"
+                },
+                "measure" : {
+                    "computing" : "actual",
+                    "element" : "number",
+                    "scope": { "$ref": "#/context/definitions/scopes/bluejay" },
+                    "params" : {
+                        "steps" : {
+                            "step1" : {
+                                "type": "script",
+                                "script": "http://host.docker.internal:5200/api/v1/public/collector/steps/request.js",
+                                "inputs" : {
+                                    "request" : {
+                                        "endpoint": "/query_range",
+                                        "method": "GET",
+                                        "params": {
+                                            "query": "sum(rate({__name__=~'^.*_http_response_time_seconds_sum$',app=~'^bluejay-.*$'}[5m]))by(app)/sum(rate({__name__=~'^.*_http_response_time_seconds_count$',app=~'^bluejay-.*$'}[5m]))by(app)",
+                                            "start": ">>>period.from<<<",
+                                            "end": ">>>period.to<<<",
+                                            "step": "5m"
+                                        }
+                                    },
+                                    "result": {
+                                        "valueAddress": "data.result",
+                                        "scopeKey": "app"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "guarantees": [
+            {
+                "id": "AVERAGE_RESPONSE_TIME_THRESHOLD",
+                "notes": "The average response time should not be higher than a given thresold",
+                "description": "Average response time should be less than 100ms for all services",
+                "scope": {
+                    "$ref": "#/context/definitions/scopes/bluejay"
+                },
+                "of": [
+                    {   
+                        "scope": {
+                            "service": "*"
+                        },
+                        "reliable" : true,
+                        "objective": "AVERAGE_RESPONSE_TIME < 100",
+                        "with": {
+                            "AVERAGE_RESPONSE_TIME": {}
+                        },
+                        "window": {
+                            "type": "static",
+                            "period": "hourly",
+                            "initial": "2022-01-01"
+                        }
+                    }
+                ]
+            }
+        ]
+    }
+}

@@ -20,7 +20,7 @@ export function directoryExists(file) {
 export function writeFile(targetFile, data) {
     fs.writeFile(targetFile, data, function writeFile(err) {
         if (err) return console.log(err);
-        console.log(`Updated file ${targetFile}`);
+        //console.log(`Updated file ${targetFile}`);
     });
 }
 
