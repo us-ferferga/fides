@@ -3,12 +3,11 @@
     "config" : {
         "escsNumber" : 2,
         "elasticityMode" : "timeWindow",
-        "experimentName": "Bluejay_2_timeWindow",
         "chaincodeName": "bluejay_ansX",
         "executionTime": 1200,
         "coldStart": false,
-        "analysisFrequency": 15,
-        "harvestFrequency": 15,
+        "analysisFrequency": 30,
+        "harvestFrequency": 30,
         "maximumTimeAnalysis": 3.2,
         "minimumTimeAnalysis": 3
     },

@@ -20,6 +20,18 @@ export function configure(file, agreement) {
     if (escsNumber != experimentData.timeBetween.length) {
         throw new Error('The esc number doesn\'t correspond with the time between list');
     }
+    if (!experimentData.config.hasOwnProperty('chaincodeName')) {
+        throw new Error('Specifiy in the config the chaincodeName param with the format \'nameX\'');
+    }
+    const periodExample = {
+        "period" : {
+            "from": 'aaaa-mm-ddThh:mm:ss.sssZ',
+            "to": 'aaaa-mm-ddThh:mm:ss.sssZ'
+        }
+    }
+    if (!experimentData.hasOwnProperty('period')) {
+        throw new Error(`Specifiy the data period information:\n${JSON.stringify(periodExample, null, 2)}`);
+    }
     // Copy to experiments results folder
     const experimentCopyPath = config.experiments.path.results;
     if (!files.directoryExists(experimentCopyPath)) {
@@ -45,17 +57,12 @@ export function configure(file, agreement) {
     let rawAgreementData = files.readFile(agreement);
     let agreementData = JSON.parse(rawAgreementData);
     let agreementId = agreementData.id + 'X';
-    // Assign char X to the agreement name in order to save results for each agreement
-    /*let agreementName = files.getFileName(agreement).split('.')[0];
-    if (agreementName.charAt(agreementName.length-1) != 'X') {
-        agreementName += 'X';
-    }*/
     // Update resultsPath config
     escConfig.resultsPath = path.join(config.experiments.path.results, expName, agreementId);
+    escConfig.experimentName = expName;
     files.writeFile(configFile, JSON.stringify(escConfig, null, 2));
 
     //POST registry
-    //spawnSync("curl", ["-X", "DELETE", config.experiments.endpoint.registry.agreement], { stdio: "inherit" });
     let agreementsIds = [];
     for (let i = 1; i <= escsNumber; i++) {
         let newAgreementData = JSON.parse(rawAgreementData);

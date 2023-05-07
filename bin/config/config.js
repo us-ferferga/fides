@@ -3,7 +3,13 @@
 export const infrastructure = {
     directory: 'infrastructure',
     docker: {
-        path: 'docker-falcon/docker-compose-local.yaml'
+        path: 'docker-falcon/docker-compose-local.yaml',
+        mongoURL: 'mongodb://host.docker.internal:5001',
+        governifyState: {
+            port: '6200:80',
+            image: 'alesancor1/governify-states-exporter',
+            container: 'governify-states-exporter'
+        }
     },
     agreement: {
         name: 'bluejay',
@@ -17,14 +23,14 @@ export const infrastructure = {
         backup: './infrastructure/assets/public/database/backups',
         mongo: {
             directory: 'mongo-registry',
-            file: '24-04-2023-dump_mongo-registry.zip',
-            from: './src/data/24-04-2023-dump_mongo-registry.zip',
+            file: '6-5-2023-dump_mongo-registry.zip',
+            from: './src/data/6-5-2023-dump_mongo-registry.zip',
             to:'./infrastructure/assets/public/database/backups/mongo-registry'
         },
         influx: {
             directory: 'influx-reporter',
-            file: '24-04-2023-dump_influx-reporter.zip',
-            from: './src/data/24-04-2023-dump_influx-reporter.zip',
+            file: '6-5-2023-dump_influx-reporter.zip',
+            from: './src/data/6-5-2023-dump_influx-reporter.zip',
             to:'./infrastructure/assets/public/database/backups/influx-reporter'
         },
         assets:{
@@ -73,13 +79,13 @@ export const experiments = {
     },
     endpoint: {
         registry: {
-            agreement: 'http://localhost:5400/api/v6/agreements', //'https://webhook.site/5e242e6d-db96-4b41-89af-8f28c2999ef0/api/v6/agreements', //http://localhost:5400/api/v6/agreements/
-            accountable: 'http://localhost:5400/api/v6/setUpAccountableRegistry' //'http://webhook.site/5e242e6d-db96-4b41-89af-8f28c2999ef0/api/v6/setUpAccountableRegistry' //'http://localhost:5400/api/v6/agreements/'
+            agreement: 'http://localhost:5400/api/v6/agreements',
+            accountable: 'http://localhost:5400/api/v6/setUpAccountableRegistry'
         },
         esc: {
-            up: 'http://localhost:6100/api/v1/startup', //'http://webhook.site/5e242e6d-db96-4b41-89af-8f28c2999ef0/api/v1/startup', //http://localhost:6100/api/v1/startup
-            down: 'http://localhost:6100/api/v1/shutdown', //'http://webhook.site/5e242e6d-db96-4b41-89af-8f28c2999ef0/api/v1/shutdown', //http://localhost:6100/api/v1/shutdown
-            stop: 'http://localhost:6100/api/v1/stop', //'http://webhook.site/5e242e6d-db96-4b41-89af-8f28c2999ef0/api/v1/stop/'//http://localhost:6100/api/v1/stop/
+            up: 'http://localhost:6100/api/v1/startup',
+            down: 'http://localhost:6100/api/v1/shutdown',
+            stop: 'http://localhost:6100/api/v1/stop',
             downServer: 'http://localhost:6100/down'
         }
     }

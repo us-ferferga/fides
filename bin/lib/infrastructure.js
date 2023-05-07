@@ -90,9 +90,8 @@ export function loadData() {
     }
     spawnSync("curl", [dumpPath.assets.restoreTask, '-H', 'Content-Type: application/json', '--data', JSON.stringify(influxConfig)], { stdio: "inherit" });
     spawnSync("sleep", [15], { stdio: "inherit" });
-    spawnSync("curl", ["-X", "DELETE", config.experiments.endpoint.registry.agreement + '/bluejay_ans' + ''], { stdio: "inherit" });
-    let rawAgreementData = files.readFile(config.experiments.path.agreement);
-    spawnSync("curl", [config.experiments.endpoint.registry.agreement, '-H', 'Content-Type: application/json', '-d', rawAgreementData], { stdio: "inherit" });
+    const dockerConfig = config.infrastructure.docker;
+    spawnSync("docker", ["run", "--name", dockerConfig.governifyState.container, "-d", "-e", dockerConfig.mongoURL, "-p", dockerConfig.governifyState.port, dockerConfig.governifyState.image], { stdio: "inherit" });
     console.log('Finish load data');
 }
 
@@ -103,4 +102,6 @@ export function loadData() {
 export function down(file) {
     const directory = config.infrastructure.directory;
     spawnSync("docker-compose", ["-f", `${directory}/${file}`, "--env-file", `${directory}/.env`, "down", "-v"], { stdio: "inherit" });
+    spawnSync("docker", ["stop", config.infrastructure.docker.governifyState.container]);
+    spawnSync("docker", ["rm", config.infrastructure.docker.governifyState.container]);
 }

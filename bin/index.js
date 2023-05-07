@@ -67,7 +67,7 @@ const down = program
             spawnSync("rm", ["-r", config.esc.directory], { stdio: "inherit" }); // Remove ESC folder
             spawnSync("rm", ["-r", config.esc.hyperledger.directory], { stdio: "inherit" }); // Remove fabric-samples folder
             spawnSync("rm", ["-r", config.infrastructure.directory], { stdio: "inherit" }); // Remove infrastructure folder
-            let resultsContentPath = config.experiments.path.results + '/*';
+            let resultsContentPath = config.experiments.path.results;
             spawnSync("rm", ["-r", resultsContentPath], { stdio: "inherit" }); // Remove experiments/runs content
         }
     });
