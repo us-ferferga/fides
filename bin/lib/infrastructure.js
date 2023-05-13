@@ -91,7 +91,7 @@ export function loadData() {
     spawnSync("curl", [dumpPath.assets.restoreTask, '-H', 'Content-Type: application/json', '--data', JSON.stringify(influxConfig)], { stdio: "inherit" });
     spawnSync("sleep", [15], { stdio: "inherit" });
     const dockerConfig = config.infrastructure.docker;
-    spawnSync("docker", ["run", "--name", dockerConfig.governifyState.container, "-d", "-e", dockerConfig.mongoURL, "-p", dockerConfig.governifyState.port, dockerConfig.governifyState.image], { stdio: "inherit" });
+    spawnSync("docker", ["run", "--name", dockerConfig.governifyState.container, "-d", "-e", "MONGO_URL="+dockerConfig.mongoURL, "-p", dockerConfig.governifyState.port, dockerConfig.governifyState.image], { stdio: "inherit" });
     console.log('Finish load data');
 }
 
