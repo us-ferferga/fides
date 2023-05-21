@@ -7,7 +7,7 @@ Steps for Falcon infrastructure and Bluejay
     fides setup infrastructure https://github.com/governify/falcon-infrastructure.git --env-file .env -a src/agreements/bluejay_ans.json
     ```
     In this [link](example.envfile) you can check the information that the *.env file* must contain for this use case
-    
+
     This setup will load predefined data in order to execute experiments. You can see the data in the [dashboard](http://localhost:5600/dashboard/script/dashboardLoader.js?dashboardURL=http://localhost:5300/api/v4/dashboards/bluejay_ans/group-by-service) once the infrastructure setup is finished.
 1. Setup ESC
     ```
@@ -22,7 +22,7 @@ fides setup infrastructure <infrastructure repository url> --env-file <path to .
 By default these params values are:
 - Infrastructure repository url: Falcon infrastructure: https://github.com/governify/falcon-infrastructure.git
 - Docker-compose file: *docker-falcon/docker-compose-local.yaml*
-- SLA Agreement [Bluejay](./src/agreements/bluejay_ans.json)
+- SLA Agreement [Bluejay](../src/agreements/bluejay_ans.json)
 
 ### ESC Setup
 To setup the Elastic Smart Contracts framework execute the next command:
