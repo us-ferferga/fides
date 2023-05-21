@@ -37,10 +37,15 @@ Once you have [installed all required](#requirements) softaware:
 1. Create the working directory, e.g., *MyWorkspace*
     ```
     mkdir MyWorkspace
+    cd MyWorkspace
     ```
 1. Clone the repository [fides](https://github.com/isa-group/fides) into the working directory
+    ```
+    git clone https://github.com/isa-group/fides
+    ```
 1. Install the dependencies
     ```
+    cd fides
     npm -g install
     ```
 
