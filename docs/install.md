@@ -3,45 +3,15 @@ In this guide we will install the project's software requirements to use FIDES C
 
 ## Requirements
 Software requirements:
-- git
-- cURL
-- Docker
-- Go
-- Npm + Node
-- Python
+- [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) - Tested in version 2.32.1
+- [cURL](https://curl.haxx.se/download.html) - Tested in version 7.84.0
+- [Docker](https://www.docker.com/get-started/) - Tested in version 20.10.13
+- [Go](https://go.dev/dl/) - Tested in version 1.19.6
+- [Npm + Node](#nvm-&-node)
+- [Python](#python)
 
-### git
-[Installing Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
 
-If you are running on MacOS execute:
-```
-brew install git
-```
-
-### cURL
-[Download cURL](https://curl.haxx.se/download.html)
-
-If you are running on MacOS execute:
-```
-brew install curl
-```
-
-### Docker
-[Download Docker](https://www.docker.com/get-started/)
-
-If you are running on MacOS execute:
-```
-brew install --cask docker
-```
-### Go
-[Download Go](https://go.dev/dl/)
-
-If you are running on MacOS execute:
-```
-brew install go
-```
-
-### Nvm + Node
+### Nvm & Node
 Install nvm to manage node versions [Download nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
 
 To execute the project is necessary to use node version v16.19.1. Once nvm is installed, or if you have installed previously, execute:
@@ -71,7 +41,7 @@ Once you have [installed all required](#requirements) softaware:
 1. Clone the repository [fides](https://github.com/isa-group/fides) into the working directory
 1. Install the dependencies
     ```
-    npm install
+    npm -g install
     ```
 
-You are ready to [start to setup](usage.md) the infrasctructure and ESC framework
+You are ready to [start](usage.md)

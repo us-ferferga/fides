@@ -1,6 +1,6 @@
 # Experiments Guide
 ## Configure your experiment
-The first step is configure the experiment using the [template](./experiments/template/exp_template.json). You can create a copy or update the own template.
+The first step is configure the experiment using the [template](../experiments/template/exp_template.json). You can create a copy or update the own template.
 
 The mandatory configuration in the template are:
 - **Name**: The name for the experiment with underscores
@@ -46,8 +46,8 @@ To start the experiment execute the next command:
 fides run -f <Path to the experiment config> -a <path to agreement json file> --print
 ```
 By default these params values are:
-- Experiment config [file](./experiments/template/exp_template.json): *./experiments/template/exp_template.json*
-- SLA Agreement [Bluejay](./src/agreements/bluejay_ansX.json): *./src/agreements/bluejay_ansX.json*
+- Experiment config [file](../experiments/template/exp_template.json): *../experiments/template/exp_template.json*
+- SLA Agreement [Bluejay](../src/agreements/bluejay_ansX.json): *../src/agreements/bluejay_ansX.json*
 
 The *print* param is optional. If you indicate this one, at the end of the experiment a file with some interesting graphics with the results will be generated
 
