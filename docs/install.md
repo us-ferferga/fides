@@ -7,11 +7,11 @@ Software requirements:
 - [cURL](https://curl.haxx.se/download.html) - Tested in version 7.84.0
 - [Docker](https://www.docker.com/get-started/) - Tested in version 20.10.13
 - [Go](https://go.dev/dl/) - Tested in version 1.19.6
-- [Npm + Node](#nvm-&-node)
+- [Npm + Node](#nvm-and-node)
 - [Python](#python)
 
 
-### Nvm & Node
+### Nvm and Node
 Install nvm to manage node versions [Download nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
 
 To execute the project is necessary to use node version v16.19.1. Once nvm is installed, or if you have installed previously, execute:
