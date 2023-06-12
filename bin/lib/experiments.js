@@ -77,7 +77,8 @@ export function configure(file, agreement) {
         agreementId: agreementData.id,
         agreementsIds: agreementsIds,
         period: experimentData.period,
-        timeBetween: experimentData.timeBetween
+        timeBetween: experimentData.timeBetween,
+        elasticityMode: escConfig.elasticityMode
     }
     return executeConfig;
 }
@@ -90,17 +91,15 @@ export async function execute(executeConfig, print) {
     let endpoint = config.experiments.endpoint;
     spawnSync("curl", ["-X", "POST", endpoint.esc.down, '-s', '-o', '/dev/null'], { stdio: "inherit" });
     spawnSync("curl", ["-X", "POST", endpoint.esc.up, '-s', '-o', '/dev/null'], { stdio: "inherit" });
-    await sleep(30);//await sleep(10); //await sleep(30);
+    await sleep(30);
     for (let i = 0; i < executeConfig.timeBetween.length; i++) {
         let setupPath = `${endpoint.registry.accountable}/${executeConfig.agreementsIds[i]}?from=${executeConfig.period.from}&to=${executeConfig.period.to}`;
-        //spawnSync("curl", [setupPath], { stdio: "inherit" });
         spawn("curl", [setupPath], { stdio: "inherit" });
-        await sleep(executeConfig.timeBetween[i]);//await sleep(5); //await sleep(executeConfig.timeBetween[i]);
+        await sleep(executeConfig.timeBetween[i]);
     }
     let agreementIdsLength = executeConfig.agreementsIds.length;
     for (let i = 0; i < agreementIdsLength; i++) {
         let stopPath = `${endpoint.esc.stop}/${executeConfig.agreementsIds[i]}`;
-        //spawnSync("curl", ['-X', 'DELETE', stopPath], { stdio: "inherit" });
         spawn("curl", ['-X', 'DELETE', stopPath], { stdio: "inherit" });
         if (i != agreementIdsLength) {
             await sleep(100);
@@ -110,10 +109,8 @@ export async function execute(executeConfig, print) {
     let escPath = path.join(config.esc.directory,config.esc.repository.esc.name);
     let expName = executeConfig.expName;
     if (print) {
-        //python printResults.py -a bluejay_ans -e 4 
-        //python esc/elastic-smart-contracts/printResults.py -a bluejay_ans -e Bluejay_3_timeWindow 
         let pythonPath = path.join(escPath,"printResults.py")
-        spawnSync("python", [pythonPath, "-a", executeConfig.agreementId, '-e', expName], { stdio: "inherit" });
+        spawnSync("python", [pythonPath, "-a", executeConfig.agreementId, '-e', expName, '-t', executeConfig.elasticityMode], { stdio: "inherit" });
         await sleep(3);
     }
 
