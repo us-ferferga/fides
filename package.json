@@ -8,20 +8,17 @@
     "fides": "bin/index.js",
     "fides-cli": "bin/index.js"
   },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/governify/fides-cli.git"
+    "url": "git+https://github.com/isa-group/fides-cli.git"
   },
   "author": "",
   "license": "Apache License 2.0",
   "bugs": {
-    "url": "https://github.com/governify/fides-cli/issues"
+    "url": "https://github.com/isa-group/fides-cli/issues"
   },
-  "homepage": "https://github.com/governify/fides-cli#readme",
+  "homepage": "https://github.com/isa-group/fides-cli#readme",
   "dependencies": {
-    "commander": "^10.0.1"
+    "commander": "10.0.1"
   }
 }
