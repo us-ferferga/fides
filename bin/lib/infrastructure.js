@@ -4,7 +4,7 @@ import * as config from '../config/config.js';
 import path from "path";
 
 /**
- * @description Up infrastructue from docker-compose
+ * @description Up infrastructue from docker compose
  * @param url - Infrastructure repository
  * @param envFile - Path to environment file
  * @param file - Path to docker compose file
@@ -16,7 +16,7 @@ export function deploy(url, envFile, file) {
         console.log(`Repository cloned in ${directory}`);
     }
     spawnSync("cp", [envFile, `${directory}/.env`], { stdio: "inherit" });
-    spawnSync("docker-compose", ["-f", `${directory}/${file}`, "--env-file", `${directory}/.env`, "up", "-d"], { stdio: "inherit" });
+    spawnSync("docker compose", ["-f", `${directory}/${file}`, "--env-file", `${directory}/.env`, "up", "-d"], { stdio: "inherit" });
     console.log("Infrastructure up");
 }
 
@@ -96,12 +96,12 @@ export function loadData() {
 }
 
 /**
- * @description Down infrastructue from docker-compose
+ * @description Down infrastructue from docker compose
  * @param file - Path to docker compose file
  */
 export function down(file) {
     const directory = config.infrastructure.directory;
-    spawnSync("docker-compose", ["-f", `${directory}/${file}`, "--env-file", `${directory}/.env`, "down", "-v"], { stdio: "inherit" });
+    spawnSync("docker compose", ["-f", `${directory}/${file}`, "--env-file", `${directory}/.env`, "down", "-v"], { stdio: "inherit" });
     spawnSync("docker", ["stop", config.infrastructure.docker.governifyState.container]);
     spawnSync("docker", ["rm", config.infrastructure.docker.governifyState.container]);
 }
