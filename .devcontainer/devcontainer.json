@@ -1,0 +1,23 @@
+{
+  "name": "fides-cli Codespace",
+  "image": "python:latest",
+  "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {
+      "installDockerComposeSwitch": false
+    },
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+    "ghcr.io/devcontainers/features/node:1": {},
+    "ghcr.io/devcontainers-contrib/features/apt-packages:1": {
+      "preserve_apt_list": false,
+      "packages": [
+        "curl",
+        "htop"
+      ]
+    }
+  },
+  "postCreateCommand": {
+    "npm": "npm i && npm -g i",
+    "git": "git config --global core.editor 'code --wait'",
+    "matplotlib": "pip install matplotlib"
+  }
+}
