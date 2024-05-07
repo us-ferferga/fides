@@ -34,11 +34,9 @@ export function configure(file, agreement) {
     }
     // Copy to experiments results folder
     const experimentCopyPath = config.experiments.path.results;
-    if (!files.directoryExists(experimentCopyPath)) {
-        spawnSync("mkdir", [experimentCopyPath], { stdio: "inherit" });
-    }
+    files.mkdir(experimentCopyPath);
     let expTargetFile = path.join(experimentCopyPath, expNameFile);
-    spawnSync("cp", [file, expTargetFile], { stdio: "inherit" });
+    files.copy(file, expTargetFile);
 
     // Read Config file from the elastic-smart-contract/esc-template folder
     let configFile = config.experiments.path.escCconfig;
@@ -118,5 +116,5 @@ export async function execute(executeConfig, print) {
     let resultsPath = config.experiments.path.results.replace('./', '');
     let experimentPath = path.join(escPath, resultsPath, expName);
     let experimentTargetPath = config.experiments.path.results;
-    spawnSync("cp", ["-r", experimentPath, experimentTargetPath], { stdio: "inherit" });
+    files.copy(experimentPath, experimentTargetPath);
 }

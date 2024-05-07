@@ -15,8 +15,9 @@ export function deploy(url, envFile, file) {
         spawnSync("git", ["clone", url, directory], { stdio: "inherit" });
         console.log(`Repository cloned in ${directory}`);
     }
-    spawnSync("cp", [envFile, `${directory}/.env`], { stdio: "inherit" });
-    spawnSync("docker compose", ["-f", `${directory}/${file}`, "--env-file", `${directory}/.env`, "up", "-d"], { stdio: "inherit" });
+
+    files.copy(envFile, path.join(directory, '.env'));
+    spawnSync("docker compose", ["-f", path.join(directory, file), "--env-file", path.join(directory, '.env'), "up", "-d"], { stdio: "inherit" });
     console.log("Infrastructure up");
 }
 
@@ -27,11 +28,10 @@ export function deploy(url, envFile, file) {
 export function configure(agreement) {
     spawnSync("sleep", [15], { stdio: "inherit" });
     const agreementCopyPath = config.infrastructure.agreement.path.to;
-    spawnSync("cp", [agreement, agreementCopyPath], { stdio: "inherit" });
+    files.copy(agreement, agreementCopyPath);
 
     let rawdata = files.readFile(path.join(agreementCopyPath, files.getFileName(agreement)));
     let agreementData = JSON.parse(rawdata);
-    let agreementId = agreementData.id;
     let agreementName = agreementData.id.split('_')[0];
     const targetFile = config.infrastructure.agreement.path.prometheus;
     let targetData = [
@@ -53,21 +53,17 @@ export function configure(agreement) {
 export function loadData() {
     console.log('Start load data');
     let dumpPath = config.infrastructure.dump;
-    if (!files.directoryExists(dumpPath.backup)) {
-        spawnSync("mkdir", [dumpPath.backup], { stdio: "inherit" });
-    }
-    if (!files.directoryExists(path.join(dumpPath.backup, dumpPath.mongo.directory))) {
-        spawnSync("mkdir", [path.join(dumpPath.backup, dumpPath.mongo.directory)], { stdio: "inherit" });
-    }
-    if (!files.directoryExists(path.join(dumpPath.backup, dumpPath.influx.directory))) {
-        spawnSync("mkdir", [path.join(dumpPath.backup, dumpPath.influx.directory)], { stdio: "inherit" });
-    }
+
+    files.mkdir(dumpPath.backup);
+    files.mkdir(path.join(dumpPath.backup, dumpPath.mongo.directory));
+    files.mkdir(path.join(dumpPath.backup, dumpPath.influx.directory));
+
     const rawDeps = spawnSync('curl', ['http://localhost:5200/api/v1/public/database/dbRestore.js']);
     let dbStore = rawDeps.stdout;
     // Load Mongo dump
-    spawnSync("cp", [dumpPath.mongo.from, dumpPath.mongo.to], { stdio: "inherit" });
-    let mongoConfig = {
-        "scriptText": dbStore.toString('utf-8'),
+    files.copy(dumpPath.mongo.from, dumpPath.mongo.to);
+    const mongoConfig = {
+        "scriptText": dbStore.toString(),
         "scriptConfig": {
             "dbName": 'mongo-registry',
             "dbUrl": 'mongodb://host.docker.internal:5001',
@@ -78,9 +74,9 @@ export function loadData() {
     spawnSync("curl", [dumpPath.assets.restoreTask, '-H', 'Content-Type: application/json','--data', JSON.stringify(mongoConfig)], { stdio: "inherit" });
     spawnSync("sleep", [15], { stdio: "inherit" });
     // Load Influx dump
-    spawnSync("cp", [dumpPath.influx.from, dumpPath.influx.to], { stdio: "inherit" });
-    let influxConfig = {
-        "scriptText": dbStore.toString('utf-8'),
+    files.copy(dumpPath.influx.from, dumpPath.influx.to);
+    const influxConfig = {
+        "scriptText": dbStore.toString(),
         "scriptConfig": {
             "dbName": 'influx-reporter',
             "dbUrl": 'http://host.docker.internal:5002',
@@ -101,7 +97,7 @@ export function loadData() {
  */
 export function down(file) {
     const directory = config.infrastructure.directory;
-    spawnSync("docker compose", ["-f", `${directory}/${file}`, "--env-file", `${directory}/.env`, "down", "-v"], { stdio: "inherit" });
+    spawnSync("docker compose", ["-f", path.join(directory, file), "--env-file", path.join(directory, '.env'), "down", "-v"], { stdio: "inherit" });
     spawnSync("docker", ["stop", config.infrastructure.docker.governifyState.container]);
     spawnSync("docker", ["rm", config.infrastructure.docker.governifyState.container]);
 }

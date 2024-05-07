@@ -23,34 +23,33 @@ export function configure(url) {
         console.log(`Repository ${repository.esc.name} cloned in ${escPath}`);
     }
     if (!files.directoryExists(path.join(escPath, hyperledger.bin))) {
-        spawnSync("cp", ["-r", path.join(hyperledger.directory, hyperledger.bin), escPath], { stdio: "inherit" });
+        files.copy(path.join(hyperledger.directory, hyperledger.bin), escPath);
     }
     // esc-analyzer repo (client)
     let analyzerPath = path.join(directory, repository.analyzer.name);
     if (!files.directoryExists(analyzerPath)) {
         spawnSync("git", ["clone", repository.analyzer.url, analyzerPath], { stdio: "inherit" });
-        console.log(`Repository ${repository.analyzer.name} cloned in ${analyzerPath}`);
-        spawnSync("cp", ["-r", repository.analyzer.path.api, escPath], { stdio: "inherit" });
-        spawnSync("cp", ["-r", repository.analyzer.path.controllers, escPath], { stdio: "inherit" });
-        spawnSync("cp", [repository.analyzer.path.index, escPath], { stdio: "inherit" });
-        spawnSync("cp", [repository.analyzer.path.server, escPath], { stdio: "inherit" });
+        files.copy(repository.analyzer.path.api, escPath);
+        files.copy(repository.analyzer.path.controllers, escPath);
+        files.copy(repository.analyzer.path.index, escPath);
+        files.copy(repository.analyzer.path.server, escPath);
     }
     // esc repo
     let escName = url.substring(url.lastIndexOf("/") + 1, url.lastIndexOf(".git"));
     let escDirPath = path.join(directory, escName);
     spawnSync("git", ["clone", url, path.join(directory, escName)], { stdio: "inherit" });
     console.log(`Repository ${escName} cloned in ${escDirPath}`);
-    let escDirectory = files.getDirectories(path.join(escDirPath, 'esc'))[0];
-    spawnSync("cp", ["-r", path.join(escDirPath, 'esc', escDirectory) + '/.', path.join(escPath, repository.esc.template)], { stdio: "inherit" });
-    spawnSync("cp", [path.join(escDirPath, repository.esc.infrastructure), escPath], { stdio: "inherit" });
+    const escDirectory = files.getDirectories(path.join(escDirPath, 'esc'))[0];
+    files.copy(path.join(escDirPath, 'esc', escDirectory) + '/.', path.join(escPath, repository.esc.template))
+    files.copy(path.join(escDirPath, repository.esc.infrastructure), escPath)
     // Install dependencies
     spawnSync("npm", ["install","--prefix", escPath], { stdio: "inherit" });
     spawnSync("npm", ["install","--prefix", escPath, "express", "governify-commons", "oas-tools@2.1.4"], { stdio: "inherit" });
     spawnSync("npm", ["install","--prefix", path.join(escPath, repository.esc.network)], { stdio: "inherit" });
     // Remove esc folders
-    spawnSync("rm", ["-r", path.join(escPath, 'esc', 'intersection')], { stdio: "inherit" });
-    spawnSync("rm", ["-r", path.join(escPath, 'esc', 'street1')], { stdio: "inherit" });
-    spawnSync("rm", ["-r", path.join(escPath, 'esc', 'street2')], { stdio: "inherit" });
+    files.remove(path.join(escPath, 'esc', 'intersection'));
+    files.remove(path.join(escPath, 'esc', 'street1'));
+    files.remove(path.join(escPath, 'esc', 'street2'));
 }
 
 /**

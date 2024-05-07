@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import { spawnSync } from "child_process";
+import * as files from "./lib/files.js";
 import * as infrastructure from './lib/infrastructure.js';
 import * as config from './config/config.js';
 import * as esc from './lib/esc.js';
@@ -64,11 +65,11 @@ const down = program
         // Down infrastructure
         infrastructure.down(file);
         if (clean) {
-            spawnSync("rm", ["-r", config.esc.directory], { stdio: "inherit" }); // Remove ESC folder
-            spawnSync("rm", ["-r", config.esc.hyperledger.directory], { stdio: "inherit" }); // Remove fabric-samples folder
-            spawnSync("rm", ["-r", config.infrastructure.directory], { stdio: "inherit" }); // Remove infrastructure folder
+            files.remove(config.esc.directory);
+            files.remove(config.esc.hyperledger.directory);
+            files.remove(config.infrastructure.directory);
             let resultsContentPath = config.experiments.path.results;
-            spawnSync("rm", ["-r", resultsContentPath], { stdio: "inherit" }); // Remove experiments/runs content
+            files.remove(resultsContentPath); // Remove experiments/runs content
         }
     });
 

@@ -2,6 +2,7 @@
 
 import fs from "fs";
 import path from "path";
+import { copySync, removeSync } from 'fs-extra/esm';
 
 /**
  * @description Check if the file already exists 
@@ -13,6 +14,40 @@ export function directoryExists(file) {
 }
 
 /**
+ * @description Performs a copy ensuring the correct recursivity and directory structure exits first
+ * @param source
+ * @param dest
+ */
+export function copy(src, dest) {
+    const sourceStat = fs.statSync(src);
+    const destStat = fs.statSync(dest, { throwIfNoEntry: false });
+
+    if (sourceStat?.isDirectory() || destStat?.isDirectory()) {
+        copySync(src, path.join(dest, path.basename(src)));
+    } else {
+        copySync(src, dest);
+    }
+}
+
+/**
+ * @description Recursively creates a directory
+ * @param directory - Directory to create
+ */
+export function mkdir(directory) {
+    if (!directoryExists(directory)) {
+        fs.mkdirSync(directory, { recursive: true });
+    }
+}
+
+/**
+ * @description Removes a file or a directory and its content
+ * @param {string} path 
+ */
+export function remove(path) {
+    removeSync(path);
+}
+
+/**
  * @description Write data in the target file
  * @param targetFile 
  * @param data 
@@ -20,7 +55,6 @@ export function directoryExists(file) {
 export function writeFile(targetFile, data) {
     fs.writeFile(targetFile, data, function writeFile(err) {
         if (err) return console.log(err);
-        //console.log(`Updated file ${targetFile}`);
     });
 }
 

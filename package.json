@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/isa-group/fides-cli#readme",
   "dependencies": {
-    "commander": "10.0.1"
+    "commander": "10.0.1",
+    "fs-extra": "11.2.0"
   }
 }
