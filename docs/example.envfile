@@ -1,21 +1,11 @@
-# GENERAL (Mandatory only production deployment)
-SERVICES_PREFIX=.falcon
-DNS_SUFFIX=.governify.io
-SERVER_IP=...
-
 # CREDENTIALS (For different services)
-LOGIN_USER=
-LOGIN_PASSWORD=
+LOGIN_USER=fides
+LOGIN_PASSWORD=fides
 
 # INFRASTRUCTURE
-GOV_INFRASTRUCTURE=http://host.docker.internal:5200/api/v1/public/infrastructure-local.yaml
-ASSETS_GOV_INFRASTRUCTURE=/home/project/public/infrastructure-local.yaml
+GOV_INFRASTRUCTURE=http://falcon-assets-manager/api/v1/public/infrastructure.yaml
 ASSETS_REPOSITORY_BRANCH=main
-INFLUX_URL=http://host.docker.internal:5002
-NODE_ENV=development
-
-# COMPOSE SPECIFIC CONFIGURATIONS
-COMPOSE_HTTP_TIMEOUT=1000
+INFLUX_URL=http://falcon-influx-reporter:8086
 
 # ASSETS MANAGER
-KEY_ASSETS_MANAGER_PRIVATE=
+KEY_ASSETS_MANAGER_PRIVATE=fides
