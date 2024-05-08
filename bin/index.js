@@ -7,6 +7,7 @@ import * as config from './config/config.js';
 import * as esc from './lib/esc.js';
 import * as experiments from './lib/experiments.js';
 import { program } from "commander";
+import { curlWithRetry } from "./lib/utils.js";
 
 /* Configure the CLI */
 program
@@ -61,7 +62,7 @@ const down = program
         let downServer = {
             "down": true
         }
-        spawnSync("curl", [config.experiments.endpoint.esc.downServer, '-H', 'Content-Type: application/json', '-d', JSON.stringify(downServer, null, 2)], { stdio: "inherit" });
+        curlWithRetry([config.experiments.endpoint.esc.downServer, '-H', 'Content-Type: application/json', '-d', JSON.stringify(downServer, null, 2)], { stdio: "inherit" })
         // Down infrastructure
         infrastructure.down(file);
         if (clean) {

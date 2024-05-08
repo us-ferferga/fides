@@ -1,6 +1,7 @@
 import { spawnSync } from "child_process";
 import * as files from './files.js';
 import * as config from '../config/config.js';
+import { curlWithRetry, sleepSync } from "./utils.js";
 import path from "path";
 
 /**
@@ -26,7 +27,7 @@ export function deploy(url, envFile, file) {
  * @param agreement - Path to agreement file
  */
 export function configure(agreement) {
-    spawnSync("sleep", [15], { stdio: "inherit" });
+    sleepSync(15);
     const agreementCopyPath = config.infrastructure.agreement.path.to;
     files.copy(agreement, agreementCopyPath);
 
@@ -58,7 +59,7 @@ export function loadData() {
     files.mkdir(path.join(dumpPath.backup, dumpPath.mongo.directory));
     files.mkdir(path.join(dumpPath.backup, dumpPath.influx.directory));
 
-    const rawDeps = spawnSync('curl', ['http://localhost:5200/api/v1/public/database/dbRestore.js']);
+    const rawDeps = curlWithRetry(['http://127.0.0.1:5200/api/v1/public/database/dbRestore.js']);
     let dbStore = rawDeps.stdout;
     // Load Mongo dump
     files.copy(dumpPath.mongo.from, dumpPath.mongo.to);
@@ -71,8 +72,8 @@ export function loadData() {
             "backup": dumpPath.mongo.file
         }
     }
-    spawnSync("curl", [dumpPath.assets.restoreTask, '-H', 'Content-Type: application/json','--data', JSON.stringify(mongoConfig)], { stdio: "inherit" });
-    spawnSync("sleep", [15], { stdio: "inherit" });
+    curlWithRetry([dumpPath.assets.restoreTask, '-H', 'Content-Type: application/json','--data', JSON.stringify(mongoConfig)], { stdio: "inherit" });
+    sleepSync(15);
     // Load Influx dump
     files.copy(dumpPath.influx.from, dumpPath.influx.to);
     const influxConfig = {
@@ -84,8 +85,8 @@ export function loadData() {
             "backup": dumpPath.influx.file
         }
     }
-    spawnSync("curl", [dumpPath.assets.restoreTask, '-H', 'Content-Type: application/json', '--data', JSON.stringify(influxConfig)], { stdio: "inherit" });
-    spawnSync("sleep", [15], { stdio: "inherit" });
+    curlWithRetry([dumpPath.assets.restoreTask, '-H', 'Content-Type: application/json', '--data', JSON.stringify(influxConfig)]);
+    sleepSync(15);
     const dockerConfig = config.infrastructure.docker;
     spawnSync("docker", ["run", "--name", dockerConfig.governifyState.container, "-d", "-e", "MONGO_URL="+dockerConfig.mongoURL, "-p", dockerConfig.governifyState.port, dockerConfig.governifyState.image], { stdio: "inherit" });
     console.log('Finish load data');

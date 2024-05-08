@@ -1,6 +1,6 @@
-import { spawn, spawnSync } from "child_process";
+import { spawnSync } from "child_process";
 import * as files from './files.js';
-import { sleep } from "./utils.js";
+import { curlWithRetry, sleep } from "./utils.js";
 import * as config from '../config/config.js';
 import path from "path";
 
@@ -68,7 +68,7 @@ export function configure(file, agreement) {
         newAgreementData.id = newId;
         agreementsIds.push(newId);
         let dataBody = JSON.stringify(newAgreementData, null, 2);
-        spawnSync("curl", [config.experiments.endpoint.registry.agreement, '-H', 'Content-Type: application/json', '-d', dataBody], { stdio: "inherit" });
+        curlWithRetry([config.experiments.endpoint.registry.agreement, '-H', 'Content-Type: application/json', '-d', dataBody], { stdio: "inherit" });
     }
     let executeConfig = {
         expName: expName,
@@ -87,18 +87,18 @@ export function configure(file, agreement) {
  */
 export async function execute(executeConfig, print) {
     let endpoint = config.experiments.endpoint;
-    spawnSync("curl", ["-X", "POST", endpoint.esc.down, '-s', '-o', '/dev/null'], { stdio: "inherit" });
-    spawnSync("curl", ["-X", "POST", endpoint.esc.up, '-s', '-o', '/dev/null'], { stdio: "inherit" });
+    curlWithRetry(["-X", "POST", endpoint.esc.down, '-s', '-o', '/dev/null'], { stdio: "inherit" });
+    curlWithRetry(["-X", "POST", endpoint.esc.up, '-s', '-o', '/dev/null'], { stdio: "inherit" });
     await sleep(30);
     for (let i = 0; i < executeConfig.timeBetween.length; i++) {
         let setupPath = `${endpoint.registry.accountable}/${executeConfig.agreementsIds[i]}?from=${executeConfig.period.from}&to=${executeConfig.period.to}`;
-        spawn("curl", [setupPath], { stdio: "inherit" });
+        curlWithRetry([setupPath], { stdio: "inherit" });
         await sleep(executeConfig.timeBetween[i]);
     }
     let agreementIdsLength = executeConfig.agreementsIds.length;
     for (let i = 0; i < agreementIdsLength; i++) {
         let stopPath = `${endpoint.esc.stop}/${executeConfig.agreementsIds[i]}`;
-        spawn("curl", ['-X', 'DELETE', stopPath], { stdio: "inherit" });
+        curlWithRetry(['-X', 'DELETE', stopPath], { stdio: "inherit" });
         if (i != agreementIdsLength) {
             await sleep(100);
         }

@@ -3,6 +3,7 @@ import { spawnSync, execSync } from 'child_process';
 import * as config from '../config/config.js';
 import * as files from './files.js';
 import path from 'path';
+import { curlWithRetry } from './utils.js';
 
 /**
  * @description Configure elastic-smart-contracts
@@ -66,6 +67,6 @@ export function init() {
  * @description Down network
  */
 export function down() {
-    let endpoint = config.experiments.endpoint;
-    spawnSync("curl", ["-X", "POST", endpoint.esc.down, '-s', '-o', '/dev/null'], { stdio: "inherit" });
+    const endpoint = config.experiments.endpoint;
+    curlWithRetry(["-X", "POST", endpoint.esc.down, '-s', '-o', '/dev/null'], { stdio: "inherit" });
 }
