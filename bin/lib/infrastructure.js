@@ -18,7 +18,7 @@ export function deploy(url, envFile, file) {
     }
 
     files.copy(envFile, path.join(directory, '.env'));
-    spawnSync("docker compose", ["-f", path.join(directory, file), "--env-file", path.join(directory, '.env'), "up", "-d"], { stdio: "inherit" });
+    spawnSync("docker", ["compose", "-f", path.join(directory, file), "--env-file", path.join(directory, '.env'), "up", "-d", "--wait"], { stdio: "inherit" });
     console.log("Infrastructure up");
 }
 
@@ -98,7 +98,7 @@ export function loadData() {
  */
 export function down(file) {
     const directory = config.infrastructure.directory;
-    spawnSync("docker compose", ["-f", path.join(directory, file), "--env-file", path.join(directory, '.env'), "down", "-v"], { stdio: "inherit" });
+    spawnSync("docker", ["compose", "-f", path.join(directory, file), "--env-file", path.join(directory, '.env'), "down", "--rmi", "all", "-v"], { stdio: "inherit" });
     spawnSync("docker", ["stop", config.infrastructure.docker.governifyState.container]);
     spawnSync("docker", ["rm", config.infrastructure.docker.governifyState.container]);
 }
