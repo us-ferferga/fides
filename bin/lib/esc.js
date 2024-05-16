@@ -18,7 +18,7 @@ export function configure(url) {
         execSync(`curl -sSL https://bit.ly/2ysbOFE | bash -s -- ${hyperledger.fabricVersion} ${hyperledger.caVersion}`);
     }
     // elastic-smart-contract repo
-    let escPath = path.join(directory,repository.esc.name);
+    const escPath = path.join(directory,repository.esc.name);
     if (!files.directoryExists(escPath)) {
         spawnSync("git", ["clone", repository.esc.url, escPath], { stdio: "inherit" });
         console.log(`Repository ${repository.esc.name} cloned in ${escPath}`);
@@ -27,7 +27,7 @@ export function configure(url) {
         files.copy(path.join(hyperledger.directory, hyperledger.bin), escPath);
     }
     // esc-analyzer repo (client)
-    let analyzerPath = path.join(directory, repository.analyzer.name);
+    const analyzerPath = path.join(directory, repository.analyzer.name);
     if (!files.directoryExists(analyzerPath)) {
         spawnSync("git", ["clone", repository.analyzer.url, analyzerPath], { stdio: "inherit" });
         files.copy(repository.analyzer.path.api, escPath);
@@ -36,8 +36,8 @@ export function configure(url) {
         files.copy(repository.analyzer.path.server, escPath);
     }
     // esc repo
-    let escName = url.substring(url.lastIndexOf("/") + 1, url.lastIndexOf(".git"));
-    let escDirPath = path.join(directory, escName);
+    const escName = url.substring(url.lastIndexOf("/") + 1).replace(".git", "");
+    const escDirPath = path.join(directory, escName);
     spawnSync("git", ["clone", url, path.join(directory, escName)], { stdio: "inherit" });
     console.log(`Repository ${escName} cloned in ${escDirPath}`);
     const escDirectory = files.getDirectories(path.join(escDirPath, 'esc'))[0];
@@ -59,7 +59,7 @@ export function configure(url) {
 export function init() {
     const directory = config.esc.directory;
     const repository = config.esc.repository;
-    let escPath = path.join(directory,repository.esc.name);
+    const escPath = path.join(directory,repository.esc.name);
     spawnSync("npm", ["start", "--prefix", escPath], { stdio: "inherit" })
 }
 

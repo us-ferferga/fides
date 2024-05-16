@@ -4,6 +4,7 @@ LOGIN_PASSWORD=fides
 
 # INFRASTRUCTURE
 GOV_INFRASTRUCTURE=http://falcon-assets-manager/api/v1/public/infrastructure.yaml
+ASSETS_REPOSITORY=https://github.com/governify/assets-falcon
 ASSETS_REPOSITORY_BRANCH=main
 INFLUX_URL=http://falcon-influx-reporter:8086
 

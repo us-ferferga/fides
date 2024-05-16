@@ -21,7 +21,7 @@ const setup = program
     .command("setup")
     .usage("[command] [options]")
 
-const setupInfrastructure = setup
+setup
     .command("infrastructure <url>")
     .requiredOption("--env-file <path>", "Path to the .env file")
     .requiredOption("-f, --file <path>", "Path to the docker-compose file", config.infrastructure.docker.path)
@@ -33,25 +33,25 @@ const setupInfrastructure = setup
         infrastructure.loadData();
     });
 
-const setupESC = setup
+setup
     .command("esc <url>")
     .action((url, options) => {
         esc.configure(url);
         esc.init();
     });
 
-const run = program
+program
     .command('run')
     .requiredOption("-f, --file <path>", "Path to the experiment config", config.experiments.path.template)
     .requiredOption("-a, --agreement <path>", "Path to the agreement file", config.experiments.path.agreement)
     .option("--print", "Print the graphs of results")
     .action((options) => {
         const { file, agreement, print } = options;
-        let executeConfig = experiments.configure(file, agreement);
+        const executeConfig = experiments.configure(file, agreement);
         experiments.execute(executeConfig, print);
     });
 
-const down = program
+program
     .command('down')
     .option("--clean", "Remove all generated files")
     .requiredOption("-f, --file <path>", "Path to the docker-compose file", config.infrastructure.docker.path)
@@ -59,7 +59,7 @@ const down = program
         const { clean, file } = options;
         // Down ESC
         esc.down();
-        let downServer = {
+        const downServer = {
             "down": true
         }
         curlWithRetry([config.experiments.endpoint.esc.downServer, '-H', 'Content-Type: application/json', '-d', JSON.stringify(downServer, null, 2)], { stdio: "inherit" })
@@ -69,7 +69,7 @@ const down = program
             files.remove(config.esc.directory);
             files.remove(config.esc.hyperledger.directory);
             files.remove(config.infrastructure.directory);
-            let resultsContentPath = config.experiments.path.results;
+            const resultsContentPath = config.experiments.path.results;
             files.remove(resultsContentPath); // Remove experiments/runs content
         }
     });

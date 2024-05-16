@@ -12,10 +12,14 @@
       "packages": [
         "curl",
         "htop",
+        "python3-tk",
         "chromium",
         "nano"
       ]
     }
+  },
+  "containerEnv": {
+    "MPLBACKEND": "Agg"
   },
   "postCreateCommand": {
     "npm": "npm i && npm -g i",

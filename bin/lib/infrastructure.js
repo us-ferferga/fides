@@ -1,7 +1,7 @@
 import { spawnSync } from "child_process";
 import * as files from './files.js';
 import * as config from '../config/config.js';
-import { curlWithRetry, sleepSync } from "./utils.js";
+import { curlWithRetry } from "./utils.js";
 import path from "path";
 
 /**
@@ -27,7 +27,6 @@ export function deploy(url, envFile, file) {
  * @param agreement - Path to agreement file
  */
 export function configure(agreement) {
-    sleepSync(15);
     const agreementCopyPath = config.infrastructure.agreement.path.to;
     files.copy(agreement, agreementCopyPath);
 
@@ -35,7 +34,7 @@ export function configure(agreement) {
     let agreementData = JSON.parse(rawdata);
     let agreementName = agreementData.id.split('_')[0];
     const targetFile = config.infrastructure.agreement.path.prometheus;
-    let targetData = [
+    const targetData = [
         {
             "targets": [`exporter.${agreementName}.governify.io`],
             "labels": {
@@ -67,33 +66,40 @@ export function loadData() {
         "scriptText": dbStore.toString(),
         "scriptConfig": {
             "dbName": 'mongo-registry',
-            "dbUrl": 'mongodb://host.docker.internal:5001',
+            "dbUrl": 'mongodb://falcon-mongo-registry',
             "dbType": 'Mongo',
             "backup": dumpPath.mongo.file
         }
     }
-    curlWithRetry([dumpPath.assets.restoreTask, '-H', 'Content-Type: application/json','--data', JSON.stringify(mongoConfig)], { stdio: "inherit" });
-    sleepSync(15);
+    curlWithRetry([dumpPath.assets.restoreTask, '-H', 'Content-Type: application/json','--data', JSON.stringify(mongoConfig)]);
     // Load Influx dump
     files.copy(dumpPath.influx.from, dumpPath.influx.to);
     const influxConfig = {
         "scriptText": dbStore.toString(),
         "scriptConfig": {
             "dbName": 'influx-reporter',
-            "dbUrl": 'http://host.docker.internal:5002',
+            "dbUrl": 'http://falcon-influx-reporter:8086',
             "dbType": 'Influx',
             "backup": dumpPath.influx.file
         }
     }
     curlWithRetry([dumpPath.assets.restoreTask, '-H', 'Content-Type: application/json', '--data', JSON.stringify(influxConfig)]);
-    sleepSync(15);
+
     const dockerConfig = config.infrastructure.docker;
-    spawnSync("docker", ["run", "--name", dockerConfig.governifyState.container, "-d", "-e", "MONGO_URL="+dockerConfig.mongoURL, "-p", dockerConfig.governifyState.port, dockerConfig.governifyState.image], { stdio: "inherit" });
+    const container_network = spawnSync("docker", ["inspect",
+        "--format='{{range $k, $v := .NetworkSettings.Networks}}{{$k}} {{end}}'",
+        dockerConfig.mongoContainer
+    ]).stdout.toString().replace(/'/g, "").trim();
+    spawnSync("docker", ["run", "--name", dockerConfig.governifyState.container, "-d",
+        "-e", `MONGO_URL=mongodb://${dockerConfig.mongoContainer}`,
+        "--network", container_network,
+        "-p", dockerConfig.governifyState.port,
+        dockerConfig.governifyState.image], { stdio: "inherit" });
     console.log('Finish load data');
 }
 
 /**
- * @description Down infrastructue from docker compose
+ * @description Down infrastructure from docker compose
  * @param file - Path to docker compose file
  */
 export function down(file) {
