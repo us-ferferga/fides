@@ -1,25 +1,23 @@
 {
   "name": "fides-cli Codespace",
-  "image": "python:latest",
+  "image": "python:2.7-slim",
   "features": {
     "ghcr.io/devcontainers/features/docker-in-docker:2": {
       "installDockerComposeSwitch": false
     },
     "ghcr.io/eitsupi/devcontainer-features/jq-likes:2": {},
     "ghcr.io/devcontainers/features/node:1": {},
+    "ghcr.io/devcontainers/features/go:1": {},
     "ghcr.io/devcontainers-contrib/features/apt-packages:1": {
       "preserve_apt_list": false,
       "packages": [
         "curl",
         "htop",
-        "python3-tk",
+        "python-tk",
         "chromium",
         "nano"
       ]
     }
-  },
-  "containerEnv": {
-    "MPLBACKEND": "Agg"
   },
   "postCreateCommand": {
     "npm": "npm i && npm -g i",

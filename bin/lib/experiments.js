@@ -42,14 +42,6 @@ export function configure(file, agreement) {
     let configFile = config.experiments.path.escCconfig;
     let rawConfigData = files.readFile(configFile);
     let escConfig = JSON.parse(rawConfigData);
-    // Assign new experiment data to config file in esc-template folder
-    let escConfigs = Object.keys(escConfig);
-    let expConfigEntries = Object.entries(expConfig);
-    let data = expConfigEntries.map(([key, val] = entry) => {
-        if (escConfigs.includes(key)) {
-            escConfig[key] = val;
-        }
-    });
 
     // Read agreement data
     let rawAgreementData = files.readFile(agreement);
